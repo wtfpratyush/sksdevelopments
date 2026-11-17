@@ -259,3 +259,125 @@ def before_after_grid():
     return section('Before &amp; After', 'Transformations',
                    '        <div class="ba-grid">\n' + '\n'.join(out) + '\n        </div>',
                    side='How homes looked when we arrived, and how we handed them back.', sid='projects')
+
+
+# =====================================================================
+# Richer About + Process (keep the original home sections, add designed
+# extras in between). S = dict of reusable home sections from build_pages.
+# =====================================================================
+IMG = 'https://images.unsplash.com/{}?auto=format&fit=crop&w=1000&q=70'
+ICONS = {
+    'talk': '<path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/>',
+    'craft': '<path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/>',
+    'home': '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+    'shield': '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+    'pin': '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+}
+
+
+def icon(name):
+    return f'<svg viewBox="0 0 24 24" aria-hidden="true">{ICONS[name]}</svg>'
+
+
+def story_band():
+    facts = [('17', 'years building in Surrey'), ('1', 'point of contact, start to finish'), ('2-5-10', 'year warranty on new homes'), ('0', 'cost for your first site visit')]
+    f = ''.join(f'<li><strong>{a}</strong><span>{b}</span></li>' for a, b in facts)
+    return f'''    <section class="section section--dark story-band">
+      <div class="frame frame--dark">
+        <div class="story2">
+          <figure class="story2__img reveal"><img src="images/hero-building.webp" alt="A terraced stone and glass residence at golden hour" loading="lazy" /><figcaption>Built to last, built in Surrey</figcaption></figure>
+          <div class="story2__text">
+            <p class="eyebrow eyebrow--mono">Our Story</p>
+            <h2 class="display reveal">Seventeen Years,<br />One Standard</h2>
+            <p class="story2__lead reveal">SKS started with a simple idea: homeowners deserve a builder who treats their home like their own.</p>
+            <p class="reveal">What began with small renovations and extensions has grown into a team that plans, designs and builds complete homes and developments. We still work the way we did on day one — one point of contact, honest pricing, tidy sites and work we’re proud to put our name on.</p>
+            <ul class="facts2 reveal">{f}</ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+'''
+
+
+def values_grid():
+    vals = [('talk', 'Straight talk', 'Clear quotes, honest timelines and no surprises in the small print.'),
+            ('craft', 'Craft first', 'We’d rather take longer on a detail than hand over something we’re not proud of.'),
+            ('home', 'Respect your home', 'Protected floors, clean sites and crews who treat your house like their own.'),
+            ('shield', 'Built to code', 'Permits, inspections and BC Energy Step Code handled properly, every time.')]
+    cards_html = '\n'.join(f'''          <article class="vcard reveal"><span class="vcard__icon">{icon(i)}</span><span class="vcard__num">0{n}</span><h3>{t}</h3><p>{d}</p></article>'''
+                           for n, (i, t, d) in enumerate(vals, 1))
+    return section('What We Believe', 'The Way<br />We Work', f'        <div class="vgrid">\n{cards_html}\n        </div>',
+                   side='Four promises you can hold us to on every SKS job, big or small.')
+
+
+def who_we_help():
+    items = [('photo-1600596542815-ffad4c1539a9', 'Homeowners', 'Extensions, conversions and renovations for the home you already love.'),
+             ('photo-1613977257363-707ba9348227', 'Families building new', 'Custom homes designed around how your family lives.'),
+             ('photo-1574362848149-11496d93a7c7', 'Property investors', 'Duplexes, suites and multiplexes planned for long-term value.'),
+             ('photo-1497366216548-37526070297c', 'Businesses', 'Offices and commercial spaces fitted out around your team.')]
+    html = '\n'.join(f'''          <article class="pcard reveal"><img src="{IMG.format(p)}" alt="" loading="lazy" /><div class="pcard__body"><h3>{t}</h3><p>{d}</p></div></article>''' for p, t, d in items)
+    return section('Who We Help', 'From One Room<br />to a Whole Block', f'        <div class="pgrid">\n{html}\n        </div>',
+                   side='Every client gets the same team, the same standards and the same attention.')
+
+
+def areas_band():
+    areas = ['Surrey', 'South Surrey', 'White Rock', 'Langley', 'Delta', 'Burnaby', 'New Westminster', 'Coquitlam', 'Richmond']
+    chips_html = ''.join(f'<li>{icon("pin")}{a}</li>' for a in areas)
+    return f'''    <section class="section section--dark areas-band">
+      <div class="frame frame--dark">
+        <div class="areas2">
+          <div>
+            <p class="eyebrow eyebrow--mono">Where We Work</p>
+            <h2 class="display reveal">Surrey &amp; the<br />Lower Mainland</h2>
+            <p class="areas2__lead reveal">Based in Surrey and working right across the region. Not on the list? Call <a href="{TEL}">{PHONE}</a> — we often travel for the right project.</p>
+          </div>
+          <ul class="areas2__chips reveal">{chips_html}</ul>
+        </div>
+      </div>
+    </section>
+
+'''
+
+
+def about_page(S, off):
+    return (off(S['split']) + story_band() + off(S['pillars']) + values_grid()
+            + who_we_help() + off(S['stats']) + areas_band() + off(S['cta']))
+
+
+def timeline():
+    steps = [('First call', 'Tell us what you want to change and roughly when. We talk budget ranges honestly from the start.', ['Same-week call back', 'Rough budget guidance']),
+             ('Free site visit', 'We measure and look at structure, access and services so nothing is guessed later.', ['Measurements &amp; photos', 'Options and ideas']),
+             ('Design &amp; quote', 'Drawings, finishes and a written quote that lists exactly what’s included.', ['Itemised quote', 'Programme &amp; milestones']),
+             ('Permits', 'We prepare and submit what your municipality needs and answer any questions.', ['Permit applications', 'Engineering if required']),
+             ('Build', 'Our crew and trusted trades work to an agreed schedule with regular updates.', ['One site lead', 'Weekly updates']),
+             ('Handover', 'Final walkthrough, snag list closed, documents and warranty handed over.', ['Warranty documents', 'Aftercare contact'])]
+    items = []
+    for n, (t, d, tags) in enumerate(steps, 1):
+        tg = ''.join(f'<li>{x}</li>' for x in tags)
+        items.append(f'''          <li class="tl__item reveal"><span class="tl__dot">0{n}</span><div class="tl__body"><h3>{t}</h3><p>{d}</p><ul class="tl__tags">{tg}</ul></div></li>''')
+    return section('Step by Step', 'What Happens,<br />and When', '        <ol class="tl">\n' + '\n'.join(items) + '\n        </ol>',
+                   side='Six stages, one team — and you always know what’s next.')
+
+
+def durations():
+    jobs = [('Kitchen fitting', '3–6 weeks', 6), ('Loft or garage conversion', '6–10 weeks', 10), ('Home extension', '3–5 months', 22), ('New custom home', '10–16 months', 69)]
+    mx = 69
+    rows_html = '\n'.join(f'''          <li class="dur__row reveal" style="--w:{max(w / mx * 100, 9):.0f}%"><span class="dur__name">{n}</span><span class="dur__bar"><span></span></span><span class="dur__time">{t}</span></li>''' for n, t, w in jobs)
+    return section('Typical Timelines', 'How Long Things<br />Usually Take',
+                   f'        <ul class="dur">\n{rows_html}\n        </ul>\n        <p class="note reveal">Time on site once permits and materials are ready. Your quote includes a programme for your project; permit times vary by municipality.</p>',
+                   side='A rough guide so you can plan around the work.')
+
+
+PROCESS_FAQ = [
+    ('Do I need a permit for my project?', 'Most extensions, structural changes, conversions and new builds need a building permit. We check what your municipality requires during the site visit and handle the application for you.'),
+    ('Can we stay at home while you work?', 'Often yes, especially for extensions and kitchen fits. We plan the work to keep your home usable and warn you in advance about any days without water or power.'),
+    ('How are payments scheduled?', 'Payments are tied to clear milestones in your contract, so you only pay as work is completed.'),
+    ('Who do I talk to during the build?', 'You get one site lead for day-to-day questions, plus direct access to us by phone or email.'),
+    ('What happens if something changes?', 'Changes are priced and agreed in writing before the work is done, so the budget never drifts quietly.'),
+]
+
+
+def process_page(S, off):
+    return (off(S['process']) + timeline() + durations() + off(S['compare'])
+            + section('Questions', 'Process FAQ', faq(PROCESS_FAQ)) + off(S['cta']))

@@ -356,14 +356,14 @@ PAGES = {
         main=lambda: page_hero('About', 'About SKS Developments',
                                'Seventeen years of planning, designing and building homes across Surrey — one team from first survey to final key.',
                                'images/hero-building.webp', '62% 40%')
-        + C.about_main() + offpage(SEC['cta'])),
+        + C.about_page(SEC, offpage)),
     'process.html': dict(
         title='How We Build', tab=None, nav='process.html',
         desc='The SKS Developments process: first call, free site visit, design and quote, permits, build and handover.',
         main=lambda: page_hero('Process', 'How We Build',
                                'Six clear stages, one accountable team. Here’s exactly what working with SKS looks like.',
                                UNSPLASH.format('photo-1504307651254-35680f356dfd'), '50% 50%')
-        + C.process_main() + offpage(SEC['cta'])),
+        + C.process_page(SEC, offpage)),
     'projects.html': dict(
         title='Our Projects', tab='projects.html', nav='projects.html',
         desc='Before and after: extensions, renovations, kitchens and new homes by SKS Developments.',
