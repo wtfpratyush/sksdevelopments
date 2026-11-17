@@ -13,6 +13,9 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import page_content as C  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = lambda f: os.path.join(ROOT, f)
 
@@ -349,46 +352,46 @@ LICENCES = f'''          <p class="prose__meta">Licences, warranty and affiliati
 PAGES = {
     'about.html': dict(
         title='About Us', tab='about.html', nav='about.html',
-        desc='SKS Developments — seventeen years of building and renovation across Surrey, with one team from first survey to final key.',
+        desc='SKS Developments — seventeen years of building and renovation across Surrey and the Lower Mainland.',
         main=lambda: page_hero('About', 'About SKS Developments',
                                'Seventeen years of planning, designing and building homes across Surrey — one team from first survey to final key.',
                                'images/hero-building.webp', '62% 40%')
-        + offpage(SEC['split']) + offpage(SEC['pillars']) + offpage(SEC['stats']) + offpage(SEC['cta'])),
+        + C.about_main() + offpage(SEC['cta'])),
     'process.html': dict(
         title='How We Build', tab=None, nav='process.html',
-        desc='How SKS Developments plans, designs and builds — four clear stages and one accountable team.',
+        desc='The SKS Developments process: first call, free site visit, design and quote, permits, build and handover.',
         main=lambda: page_hero('Process', 'How We Build',
-                               'Four clear stages, one accountable team. Here’s what working with SKS looks like from start to finish.',
+                               'Six clear stages, one accountable team. Here’s exactly what working with SKS looks like.',
                                UNSPLASH.format('photo-1504307651254-35680f356dfd'), '50% 50%')
-        + offpage(SEC['process']) + offpage(SEC['compare']) + offpage(SEC['cta'])),
+        + C.process_main() + offpage(SEC['cta'])),
     'projects.html': dict(
         title='Our Projects', tab='projects.html', nav='projects.html',
-        desc='Homes, extensions and developments delivered by SKS Developments.',
+        desc='Before and after: extensions, renovations, kitchens and new homes by SKS Developments.',
         main=lambda: page_hero('Projects', 'Our Projects',
-                               'Homes, renovations and developments delivered under one standard of craft.',
+                               'Extensions, renovations and new homes — see how they looked before, and how we handed them back.',
                                UNSPLASH.format('photo-1545324418-cc1a3fa10c00'), '50% 40%')
-        + projects_section() + offpage(SEC['stats']) + offpage(SEC['cta'])),
+        + C.projects_main(C.before_after_grid())),
     'services.html': dict(
         title='Our Services', tab=None, nav='services.html',
-        desc='Extensions, loft and garage conversions, structural work, kitchens, renovations and carpentry across Surrey.',
+        desc='Extensions, loft and garage conversions, structural work, kitchens, renovations, carpentry and new homes across Surrey.',
         main=lambda: page_hero('Services', 'Our Services',
                                'Extensions, conversions, renovations and new builds — planned, designed and built by one team.',
                                UNSPLASH.format('photo-1600566753190-17f0baa2a6c3'), '50% 50%')
-        + offpage(SEC['wwd']) + disciplines_section() + offpage(SEC['divisions']) + offpage(SEC['cta'])),
+        + C.services_main(disciplines_section()) + offpage(SEC['cta'])),
     'contact.html': dict(
         title='Contact Us', tab='contact.html', nav='contact.html',
         desc='Contact SKS Developments: 604-825-4070 · shiv@sksdevelopments.com. Book a free site visit.',
         main=lambda: page_hero('Contact', 'Contact Us',
                                'Tell us about your project. We’ll arrange a free site visit and send a clear, no-obligation quote.',
                                UNSPLASH.format('photo-1600585154340-be6161a56a0c'), '50% 60%')
-        + SEC['contact'] + next_steps_section()),
+        + C.contact_main(SEC['contact'] + next_steps_section())),
     'careers.html': dict(
         title='Careers', tab=None, nav=None,
         desc='Careers at SKS Developments — site supervisors, carpenters, labourers and project coordinators in Surrey.',
         main=lambda: page_hero('Careers', 'Careers',
                                'Build your career with a team that takes pride in every home it hands over.',
                                UNSPLASH.format('photo-1541888946425-d81bb19240f5'), '50% 50%')
-        + careers_section() + offpage(SEC['cta'])),
+        + careers_section() + C.careers_extra() + offpage(SEC['cta'])),
     'privacy.html': dict(
         title='Privacy Policy', tab=None, nav=None, desc='Privacy policy for SKS Developments.',
         main=lambda: page_hero('Privacy', 'Privacy Policy', 'How we collect, use and protect your personal information.')

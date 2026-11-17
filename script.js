@@ -48,7 +48,10 @@
     headTick = false;
     const y = window.scrollY;
     header?.classList.toggle('is-scrolled', y > 40);
-    tabbar?.classList.toggle('is-away', y < 60);
+    // tab bar: hidden at the very top and once the footer comes into view
+    const footer = $('.footer');
+    const nearFooter = footer && footer.getBoundingClientRect().top < window.innerHeight - 40;
+    tabbar?.classList.toggle('is-away', y < 60 || nearFooter);
     // hide while scrolling down past the top, show again on any scroll up
     if (header) {
       if (y > lastY + 4 && y > 500 && !document.body.classList.contains('menu-open')) header.classList.add('is-hidden');
