@@ -1806,6 +1806,26 @@ button { cursor: pointer; background: none; border: 0; padding: 0; }
 }
 
 /* =========================================================
+   SCROLL MOTION — word rise, stagger, side slides, photo unfold, parallax
+   (classes are added by script.js; nothing here runs with reduced motion)
+   ========================================================= */
+.js .reveal { transition-delay: var(--d, 0ms); }
+.js .reveal.from-left:not(.is-in) { transform: translateX(-48px); }
+.js .reveal.from-right:not(.is-in) { transform: translateX(48px); }
+.js .reveal.img-reveal { opacity: 1; transition: clip-path 1.4s var(--ease), transform 1.2s var(--ease); }
+.js .reveal.img-reveal:not(.is-in) { clip-path: inset(9% 7% 9% 7% round 18px); transform: none; }
+.js .reveal.img-reveal.is-in { clip-path: inset(0 0 0 0 round 0); }
+.js .reveal.split-words { opacity: 1; transform: none; }
+.split-words .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .1em; margin-bottom: -.1em; }
+.split-words .w > span {
+  display: inline-block; transform: translateY(108%);
+  transition: transform 1s var(--ease); transition-delay: calc(var(--i, 0) * 45ms);
+}
+.split-words.is-in .w > span { transform: none; }
+.px { scale: 1.16; will-change: translate; }
+.footer__word { will-change: translate; }
+
+/* =========================================================
    REVEAL + MOTION
    ========================================================= */
 .js .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); }

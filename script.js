@@ -140,6 +140,97 @@
     window.matchMedia('(min-width: 960px)').addEventListener('change', (e) => e.matches && setMenu(false));
   }
 
+  /* ---------- scroll motion: set up before the reveal observer ---------- */
+  if (!reduced) {
+    // 1. big section headings rise in word by word
+    const splitWords = (el) => {
+      let i = 0;
+      const walk = (node) => {
+        [...node.childNodes].forEach((n) => {
+          if (n.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            n.textContent.split(/(\s+)/).forEach((part) => {
+              if (!part) return;
+              if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+              const w = document.createElement('span');
+              w.className = 'w';
+              const inner = document.createElement('span');
+              inner.textContent = part;
+              inner.style.setProperty('--i', i++);
+              w.appendChild(inner);
+              frag.appendChild(w);
+            });
+            n.replaceWith(frag);
+          } else if (n.nodeType === 1 && n.tagName !== 'BR') {
+            walk(n);
+          }
+        });
+      };
+      walk(el);
+      el.classList.add('split-words');
+    };
+    $$('h2.display, .page-hero__title').forEach((h) => {
+      splitWords(h);
+      h.classList.add('reveal');
+    });
+
+    // 2. grids: children come in one after another
+    const STAGGER = ['.ways', '.svc-grid', '.vgrid', '.pgrid', '.ba-grid', '.disc-grid', '.svc-rows', '.stats',
+      '.services', '.perks', '.info-cards', '.next-grid', '.tl', '.pillars', '.story__facts', '.facts2',
+      '.areas2__chips', '.dur', '.footer__cols', '.projects-grid', '.roles', '.faq', '.steps'];
+    STAGGER.forEach((sel) => $$(sel).forEach((grid) => {
+      [...grid.children].forEach((child, k) => {
+        child.classList.add('reveal');
+        child.style.setProperty('--d', `${Math.min(k, 8) * 90}ms`);
+      });
+    }));
+
+    // 3. photos unfold from a cropped frame
+    $$('.way__img, .story2__img, .ba__pics figure, .split__plan').forEach((el) => {
+      el.classList.add('reveal', 'img-reveal');
+    });
+
+    // 4. some blocks slide in from the side
+    $$('.story2__img, .areas2 > div:first-child, .split__text, .contact__intro').forEach((el) => el.classList.add('reveal', 'from-left'));
+    $$('.story2__text, .areas2__chips, .form').forEach((el) => el.classList.add('reveal', 'from-right'));
+    $$('.tl__item').forEach((el, k) => el.classList.add(k % 2 ? 'from-right' : 'from-left'));
+
+    // 5. parallax: photos drift inside their frames
+    const pxEls = $$('.way__img img, .card img, .pcard img, .ba__pics img, .story2__img img, .cta__media img, .svc > img')
+      .filter((img) => !img.closest('.hero'));
+    pxEls.forEach((img) => img.classList.add('px'));
+    const visible = new Set();
+    const pxIO = new IntersectionObserver((entries) => {
+      entries.forEach((en) => (en.isIntersecting ? visible.add(en.target) : visible.delete(en.target)));
+    }, { rootMargin: '10% 0px' });
+    pxEls.forEach((el) => pxIO.observe(el));
+
+    const fw = $('.footer__word');
+    let pxTick = false;
+    const runParallax = () => {
+      pxTick = false;
+      const vh = window.innerHeight;
+      visible.forEach((img) => {
+        const r = img.parentElement.getBoundingClientRect();
+        const p = (r.top + r.height / 2 - vh / 2) / vh; // -1 … 1 across the screen
+        const amp = Math.min(r.height * 0.09, 46);
+        img.style.translate = `0 ${(p * amp).toFixed(1)}px`;
+      });
+      // footer word slides in sideways as the footer appears
+      const foot = $('.footer');
+      if (fw && foot) {
+        const r = foot.getBoundingClientRect();
+        const t = Math.max(0, Math.min(1, (vh - r.top) / (r.height * 0.85)));
+        fw.style.translate = `${((1 - t) * 18).toFixed(2)}% 0`;
+      }
+    };
+    window.addEventListener('scroll', () => {
+      if (!pxTick) { pxTick = true; requestAnimationFrame(runParallax); }
+    }, { passive: true });
+    window.addEventListener('resize', runParallax);
+    runParallax();
+  }
+
   /* ---------- reveal on scroll ---------- */
   const revealIO = new IntersectionObserver((entries) => {
     entries.forEach((en) => {
