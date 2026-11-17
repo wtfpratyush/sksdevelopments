@@ -14,7 +14,7 @@
   <script>
     document.documentElement.classList.add('js');
     try {
-      if (document.documentElement.hasAttribute('data-loader') && !localStorage.getItem('sks-visited') && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+      if (document.documentElement.hasAttribute('data-loader') && !matchMedia('(prefers-reduced-motion: reduce)').matches)
         document.documentElement.classList.add('is-loading');
     } catch (e) {}
   </script>
